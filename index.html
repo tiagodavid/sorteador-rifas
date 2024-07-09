@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Sistema de Sorteio</title>
+    </head>
+    <body>
+        <form id="sorteioForm">
+            <label for="intervalos"> Intervalos (ex:1-10, 20-30, 100-200)</label>
+            <input type="text" id="intervalos" name="intervalos" required>
+            <button type="submit">Sortear</button>
+        </form>
+        <p id="resultado"></p>
+        <script>
+            document.getElementById('sorteioForm').addEventListener('submit', function(event){
+                event.preventDefault();
+                const intervalosInput = document.getElementById('intervalos').value;
+                const ranges = intervalosInput.split(',').map(range => range.split('-').map(Number));
+
+                fetch('http://localhost:3000/sortear', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type':'application/json'
+                    },
+                    body: JSON.stringify({ranges})
+                })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('resultado').textContent = `Número sorteado ${data.numeroSorteado}`
+                })
+                .catch(error => {
+                    console.log('Erro:', error);
+                })
+            })
+        </script>
+    </body>
+</html>
